@@ -1,0 +1,38 @@
+{
+    "effects": [
+        {
+            "type": "PPUCLedBlinkEffect",
+            "device": "ledBuiltInDevice",
+            "event": {
+                "type": "EVENT_SOURCE_SWITCH",
+                "param1": "203"
+            },
+            "priority": "1",
+            "repeat": "5",
+            "mode": 0
+        },
+        {
+            "type": "PPUCNullEffect",
+            "device": "ledBuiltInDevice",
+            "event": {
+                "type": "EVENT_SOURCE_SWITCH",
+                "param1": "204"
+            },
+            "priority": "2",
+            "repeat": "0",
+            "mode": 0
+        },
+        {
+            "type": "PPUCRGBColorCycleEffect(1)",
+            "device": "ws2812Serial(1)",
+            "event": {
+                "type": "EVENT_SOURCE_EFFECT",
+                "param1": "1",
+                "param2": "255"
+            },
+            "priority": "1",
+            "repeat": "-1",
+            "mode": 0
+        }
+    ]
+}

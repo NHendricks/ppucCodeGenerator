@@ -1,0 +1,37 @@
+import groovy.json.JsonSlurper
+
+task generateEffects {
+  doLast {
+    def genoutput = ''
+    def slurper  = new JsonSlurper()
+    def inputFile = file('input/EffectController/src/effects.json')
+    def json = slurper.parseText(inputFile.text)
+    genoutput += 'Start generation from ' + inputFile.name + '\n'
+    json.effects.each {effect ->
+      genoutput += '    effectsController.addEffect(\n'
+      genoutput += "         new ${effect.type},\n"
+      genoutput += "         effectsController.${effect.device},\n"
+      if (effect.event.param2) {
+        genoutput += "         new PPUCEvent(${effect.event.type}, ${effect.event.param1}, ${effect.event.param2}),\n"
+      } else {
+        genoutput += "         new PPUCEvent(${effect.event.type}, ${effect.event.param1}),\n"
+      }
+      genoutput += "         ${effect.priority}, // priority\n"
+      genoutput += "         ${effect.repeat}, // repeat\n"
+      genoutput += "         ${effect.mode} // mode\n"
+      genoutput += '    );\n\n'
+
+    }
+    genoutput += '    // End generation from ' + inputFile.name + '\n'
+    def templateFile = file('input/EffectController/src/main.cpp.template')
+    def outputFile = file('input/EffectController/src/main.cpp')
+    def outputContent = templateFile.text.replace('@EFFECTS@', genoutput)
+    outputFile.text = outputContent
+  }
+}
+
+task generate {
+	group 'Pinball Power-Up Controller'
+}
+
+generate.dependsOn generateEffects
